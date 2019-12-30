@@ -1,0 +1,44 @@
+- name: create nginx virthost configure
+  template:
+    src: zh.oldxu.com.conf.j2
+    dest: /etc/nginx/conf.d/zh.oldxu.com.conf
+  notify: restart nginx server
+
+- name: create wecenter directory
+  file:
+    path: "{{ zh_code_path }}"
+    state: directory
+    owner: "{{ web_process_user }}"
+    group: "{{ web_process_group }}"
+    recurse: yes
+
+- name: copy wecenter code
+  unarchive:
+    src: WeCenter_3-3-2.zip
+    dest: "{{ zh_code_path }}"
+    copy: yes
+    owner: "{{ web_process_user }}"
+    group: "{{ web_process_group }}"
+    creates: "{{ zh_code_path }}/index.php"
+
+- name: push zh sql file
+  copy:
+    src: zh.sql
+    dest: /tmp/zh.sql
+
+- name: import zh sql
+  mysql_db:
+    login_host: "{{ mariadb_master }}"
+    login_user: all
+    login_password: oldxu.com
+    name: zh
+    state: import
+    target: /tmp/zh.sql
+
+- name: mount nfs share directory to zh
+  mount:
+    src: 172.16.1.31:{{ nfs_wecenter }}
+    path: /code/zh/uploads/article/20191227/
+    opts: defaults
+    fstype: nfs
+    state: mounted

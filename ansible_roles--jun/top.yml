@@ -1,0 +1,29 @@
+- hosts: all
+  roles:
+    - role: base
+
+- hosts: db
+  roles:
+    - role: redis
+    - role: mariadb
+
+- hosts: nfs
+  roles:
+    - role: nfs
+    - role: lsyncd
+
+- hosts: backup
+  roles:
+    - role: rsync
+
+- hosts: web
+  roles:
+    - role: kodcloud-web
+    - role: wecenter-web
+      tags: zh
+
+- hosts: lb
+  roles:
+    - role: keepalived
+    - role: kodcloud-proxy
+    - role: wecenter-proxy

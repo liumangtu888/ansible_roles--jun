@@ -1,0 +1,13 @@
+- name: import ssl key
+  copy:
+    src: ssl_key
+    dest: /etc/nginx/
+
+- name: create nginx proxy virthost configure
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: proxy_params.j2 , dest: /etc/nginx/rpoxy_params }
+    - { src: proxy_zh.oldxu.com.conf.j2 , dest: /etc/nginx/conf.d/proxy_zh.oldxu.com.conf }
+  notify: restart nginx server

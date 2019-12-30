@@ -1,0 +1,24 @@
+upstream {{ cloud_server_name }} {
+  {% for host in groups['web'] %}
+    server {{ host }}:{{ cloud_server_port }};
+  {% endfor %}
+}
+
+server {
+  listen {{ cloud_proxy_https_port }} ssl;
+  ssl_certificate {{ ssl_certifi }};
+  ssl_certificate_key {{ ssl_certifi_key }};
+  server_name {{ cloud_server_name }};
+
+  location / {
+    proxy_pass http://{{ cloud_server_name }};
+    include proxy_params;
+ }
+}
+
+server {
+  listen {{ cloud_proxy_port }};
+  server_name {{ cloud_server_name }};
+
+  return 302 https://{{ cloud_server_name }}$request_uri;
+ }

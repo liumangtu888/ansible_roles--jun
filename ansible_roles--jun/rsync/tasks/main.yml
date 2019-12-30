@@ -1,0 +1,41 @@
+- name: installed rsync server
+  yum:
+    name: rsync
+    state: present
+
+- name: create rsync group
+  group:
+    name: rsync
+    state: present
+
+- name: create rsync user
+  user:
+    name: rsync
+    create_home: no
+    shell: /sbin/nologin
+
+- name: create backup directory
+  file:
+    path: /backup
+    state: directory
+    owner: rsync
+    group: rsync
+    recurse: yes
+
+- name: configure rsync server
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+  loop:
+    - { src: rsyncd.conf.j2 , dest: /etc/rsyncd.conf , mode: '0644' }
+    - { src: rsync.passwd.j2 , dest: /etc/rsync.passwd , mode: '0600' }
+  notify: restart rsync server
+
+- name: systemd rsync server
+  systemd:
+    name: rsyncd
+    state: started
+    enabled: yes

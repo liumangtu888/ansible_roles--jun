@@ -1,0 +1,54 @@
+# php packages
+
+packages:
+  - nginx
+  - php71w
+  - php71w-cli
+  - php71w-common
+  - php71w-devel
+  - php71w-embedded
+  - php71w-gd
+  - php71w-mbstring
+  - php71w-pdo
+  - php71w-xml
+  - php71w-fpm
+  - php71w-mysqlnd
+  - php71w-opcache
+  - php71w-mcrypt
+  - php71w-pecl-memcached
+  - php71w-pecl-mongodb
+  - php71w-pecl-redis
+  - php71w-pecl-zip
+  - php71w-bcmath
+
+# kod web
+redis_server_ip: 172.16.1.51
+redis_server_port: 6379
+cloud_code_path: /code/ansible
+cloud_server_port: 80
+cloud_server_name: ansible.oldxu.com
+
+# kod proxy
+cloud_proxy_port: 80
+cloud_proxy_https_port: 443
+ssl_certifi: /etc/nginx/ssl_key/server.crt
+ssl_certifi_key: /etc/nginx/ssl_key/server.key
+
+# wecenter web
+zh_code_path: /code/zh
+zh_server_name: zh.oldxu.com
+zh_server_port: 80
+mariadb_master: 172.16.1.51
+
+# wecenter proxy
+zh_proxy_https_port: 443
+zh_proxy_port: 80
+
+# nfs
+web_process_user: www
+web_process_group: www
+nfs_wecenter: /data/wecenter
+nfs_zrlog: /data/zrlog
+nfs_kodcloud: /data/kodcloud
+nfs_share_ip: 172.16.1.0/24
+

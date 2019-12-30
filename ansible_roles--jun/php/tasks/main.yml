@@ -1,0 +1,22 @@
+- name: installed php server
+  yum:
+    name: "{{ packages }}"
+    state: present
+
+- name: configure php server
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+  loop:
+    - { src: php.ini.j2 , dest: /etc/php.ini , mode: '0644' }
+    - { src: php_www.conf.j2 , dest: /etc/php-fpm.d/www.conf , mode: '0644' }
+  notify: restart php server
+
+- name: systemd php server
+  systemd:
+    name: php-fpm
+    state: started
+    enabled: yes 

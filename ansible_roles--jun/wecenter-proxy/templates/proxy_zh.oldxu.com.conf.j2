@@ -1,0 +1,25 @@
+upstream {{ zh_server_name }} {
+{% for host in groups['web'] %}
+	server {{ host }}:{{ zh_server_port }};
+{% endfor %}
+}
+
+	server {
+	  listen {{ zh_proxy_https_port }} ssl;
+	  ssl_certificate {{ ssl_certifi }};
+          ssl_certificate_key {{ ssl_certifi_key }};
+	  server_name {{ zh_server_name }};
+	  
+	 
+       	 location / {
+	    proxy_pass http://{{ zh_server_name }};
+	    include proxy_params;
+ }
+}
+
+	server {
+	  listen {{ zh_proxy_port }};
+	  server_name {{ zh_server_name }};
+
+	  return 302 https://{{ zh_server_name }}$request_uri;
+}

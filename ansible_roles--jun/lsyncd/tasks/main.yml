@@ -1,0 +1,22 @@
+- name: installed lsyncd server
+  yum:
+    name: lsyncd
+    state: present
+
+- name: configure lsyncd server
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+  loop:
+    - { src: lsyncd.conf.j2 , dest: /etc/lsyncd.conf , mode: '0644' }
+    - { src: rsync.pass.j2 , dest: /etc/rsync.pass , mode: '0600' }
+  notify: restart lsyncd server
+
+- name: systemd lsyncd server
+  systemd:
+    name: lsyncd
+    state: started
+    enabled: yes
